@@ -1,0 +1,24 @@
+# 本地凭据 —— 绝对不要提交（后端源码已移出仓库，此条为兜底）
+.deploy-credentials.json
+*credentials*.json
+*.key
+*.pem
+.env
+.env.*
+
+# 依赖与本地缓存
+node_modules/
+package-lock.json
+.wrangler/
+.wrangler.toml
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+
+# 备份
+*.bak
+*.bak-*
+
+# 私有交付文档与后端源码（不进公开仓）
+_私有交付文档/

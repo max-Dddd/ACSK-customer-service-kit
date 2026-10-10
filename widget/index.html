@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 客服聊天窗 · 演示</title>
+<style>
+  :root { --line:#e5e7eb; --ink:#1f2328; --muted:#6b7280; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:40px 24px 120px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:#fafafa; line-height:1.65;
+  }
+  /* 宽屏时右侧给聊天窗留位置，避免它压住问题按钮 */
+  @media (min-width:1150px){ body{ padding-right:400px; } }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { font-size:24px; margin:0 0 8px; }
+  .sub { color:var(--muted); font-size:14px; margin-bottom:28px; }
+  h2 { font-size:15px; margin:32px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:8px; }
+  .q {
+    text-align:left; background:#fff; border:1px solid var(--line); border-radius:8px;
+    padding:10px 12px; font-size:13px; cursor:pointer; color:var(--ink);
+    font-family:inherit; line-height:1.45; transition:.12s;
+  }
+  .q:hover { border-color:#9ca3af; transform:translateY(-1px); }
+  .q span { display:block; color:var(--muted); font-size:11px; margin-bottom:3px; }
+  .note {
+    background:#fff7ed; border:1px solid #fed7aa; color:#9a3412;
+    border-radius:10px; padding:12px 14px; font-size:13px; margin-top:16px;
+  }
+  .cfg {
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; margin-bottom:8px;
+  }
+  .cfg label { font-size:13px; font-weight:600; display:block; margin-bottom:8px; }
+  .cfg .row { display:flex; gap:8px; flex-wrap:wrap; }
+  .cfg input {
+    flex:1; min-width:220px; border:1px solid var(--line); border-radius:8px;
+    padding:9px 11px; font-size:13px; font-family:ui-monospace,Menlo,Consolas,monospace;
+    outline:none; color:var(--ink);
+  }
+  .cfg input:focus { border-color:#9ca3af; }
+  .cfg button {
+    border:0; background:#111827; color:#fff; border-radius:8px;
+    padding:9px 16px; font-size:13px; cursor:pointer; font-family:inherit; font-weight:600;
+  }
+  .cfg button:hover { opacity:.88; }
+  .cfg .hint { font-size:12px; color:var(--muted); margin-top:8px; }
+  .status { font-size:12px; margin-top:8px; font-weight:600; }
+  .status.local { color:#6b7280; }
+  .status.ai { color:#047857; }
+  .status.err { color:#b91c1c; }
+  code { background:#f3f4f6; padding:1px 5px; border-radius:4px; font-size:12px; }
+  .legend { font-size:13px; color:var(--muted); margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI 客服聊天窗 · 演示</h1>
+  <p class="sub">
+    右下角就是聊天窗。点下面的问题直接发进去，看它怎么答——<strong>能答的自己答，答不上来的问 AI，不该答的转人工</strong>。
+  </p>
+
+  <h2>0 · AI 后端（可留空）</h2>
+  <div class="cfg">
+    <label for="ep">后端代理地址</label>
+    <div class="row">
+      <input id="ep" type="text" placeholder="http://localhost:8787 或 https://your-worker.workers.dev" autocomplete="off" spellcheck="false">
+      <button id="ep-btn" type="button">连接</button>
+      <button id="ep-clear" type="button" style="background:#fff;color:#111827;border:1px solid #e5e7eb">断开</button>
+    </div>
+    <div id="st" class="status local">当前：纯本地匹配模式（只用知识库，不联网）</div>
+    <p class="hint">
+      留空 = 纯本地模式，只用知识库回答，不花一分钱。<br>
+      填上 = 启用 AI 兜底：本地答不上来的问题，转交大模型按知识库作答。<br>
+      本地跑后端：<code>cd server &amp;&amp; node local-server.mjs</code> → 然后打开 <code>http://localhost:8787</code>
+    </p>
+  </div>
+
+  <div class="note">
+    <strong>打不开聊天窗？</strong> 直接双击这个文件，浏览器会因为安全策略读不到知识库。
+    在 <code>widget/</code> 目录下跑 <code>python -m http.server 8000</code> 即可。
+    想看 AI 兜底的效果，访问仓库主页的在线 Demo。
+  </div>
+
+  <h2>1 · 应该自动回答的（11 条）</h2>
+  <div class="grid" id="g-auto"></div>
+
+  <h2>2 · 应该转人工的 —— 答完提示转人工（5 条）</h2>
+  <div class="grid" id="g-handoff"></div>
+
+  <h2>3 · 绝对不许机器自己拍板的（4 条）</h2>
+  <div class="grid" id="g-block"></div>
+  <p class="legend">第 3 组涉及退款、赔付、承诺日期、议价。机器一律不给答案，直接转人工。</p>
+
+  <h2>4 · 知识库里没有的 —— 交给 AI 兜底（6 条）</h2>
+  <div class="grid" id="g-ai"></div>
+  <p class="legend">
+    这一组本地匹配不上。没填后端地址时，它们会走「转人工」；填上地址后，会交给大模型作答。
+    其中最后两条（退款、折扣）即使走 AI，也会被服务端强制转人工 —— 这是双保险。
+  </p>
+</div>
+
+<script src="chat-widget.js"></script>
+<script>
+  // 后端地址。留空 = 自动用「当前站点 + /api/chat」
+  // （本地调试服务 local-server 和 Cloudflare Worker 都是同源部署，所以自动就对；
+  //   若前端与后端不同源，在这里填完整地址，例如 https://xxx.workers.dev/api/chat）
+  var AI_ENDPOINT = "";
+
+  if (!AI_ENDPOINT) {
+    AI_ENDPOINT = location.origin + "/api/chat";
+  }
+
+  window.AICS_CONFIG = {
+    kbUrl: "knowledge-base.example.json",
+    aiEndpoint: AI_ENDPOINT,
+    title: "客服",
+    greeting: "您好，有什么可以帮您？直接打字问就行。",
+    handoff: {
+      whatsapp: "your-whatsapp-number",
+      email: "hello@example.com",
+      text: "需要人工处理？"
+    },
+    threshold: 42,
+    showScore: true,
+    accent: "#111827",
+    position: "right"
+  };
+</script>
+<script>
+  var GROUPS = {
+    "g-auto": [
+      ["催单", "Where is my order?"],
+      ["中文问物流", "我的货到哪了？都两周了"],
+      ["全大写", "WHEN WILL MY PACKAGE ARRIVE"],
+      ["发沙特", "Do you ship to Saudi Arabia?"],
+      ["尺寸", "Will this fit a 65 inch TV?"],
+      ["货到付款", "支持货到付款吗"],
+      ["兼容性", "does it work with iPhone 15 pro max"],
+      ["散装英语", "helo i want buy ship to malaysia can?"],
+      ["阿语", "هل الدفع عند الاستلام متاح؟"],
+      ["西语", "¿Hacen envíos a México?"],
+      ["退货运费", "我要退货，运费谁出？"]
+    ],
+    "g-handoff": [
+      ["超期抱怨", "it's been 3 weeks and nothing. this is ridiculous"],
+      ["威胁差评", "This is a scam. I'm reporting you and leaving 1 star."],
+      ["愤怒", "terrible service, never buying again!!!"],
+      ["中文投诉", "你们就是骗子，我要投诉"],
+      ["货损", "It arrived broken. What are you going to do about it?"]
+    ],
+    "g-block": [
+      ["要退款", "I want a refund"],
+      ["退款到账", "how long does the refund take to show up in my account?"],
+      ["要求保证日期", "Can you guarantee it will arrive before Dec 25?"],
+      ["要折扣", "If I order now, do I get a discount?"]
+    ],
+    "g-ai": [
+      ["问配套商品", "你们有配套的收纳袋卖吗？"],
+      ["开发票", "Can I get an invoice for my order?"],
+      ["颜色", "Does this come in black?"],
+      ["问保修", "你们的产品保修多久？"],
+      ["AI+退款（双保险）", "I want a refund for order #12345"],
+      ["AI+折扣（双保险）", "Can you give me a better price if I buy two?"]
+    ]
+  };
+
+  Object.keys(GROUPS).forEach(function (id) {
+    var box = document.getElementById(id);
+    GROUPS[id].forEach(function (item) {
+      var b = document.createElement("button");
+      b.className = "q";
+      b.type = "button";
+      b.innerHTML = "<span>" + item[0] + "</span>" + item[1];
+      b.addEventListener("click", function () {
+        window.AICS.open();
+        window.AICS.ask(item[1]);
+      });
+      box.appendChild(b);
+    });
+  });
+
+  /* ---------------- AI 后端连接 ---------------- */
+
+  var epInput = document.getElementById("ep");
+  var st = document.getElementById("st");
+
+  function setStatus(text, cls) {
+    st.className = "status " + cls;
+    st.textContent = text;
+  }
+
+  function connect() {
+    var url = epInput.value.trim().replace(/\/+$/, "");
+    if (!url) {
+      window.AICS.setAIEndpoint("");
+      setStatus("当前：纯本地匹配模式（只用知识库，不联网）", "local");
+      return;
+    }
+
+    var healthUrl = url;
+    try { healthUrl = new URL(url).origin + "/health"; } catch (e) { /* 手动输的相对地址，直接用 */ }
+
+    setStatus("正在检测 " + healthUrl + " …", "local");
+    fetch(healthUrl, { method: "GET" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)); })
+      .then(function (info) {
+        window.AICS.setAIEndpoint(url);
+        var mode = info && info.mode === "mock" ? "mock 模式（返回模拟回答）" : "真实模式";
+        setStatus("已连接：" + url + " ｜ " + mode + " ｜ 知识库 " + ((info && info.kbEntries) || "?") + " 条", "ai");
+      })
+      .catch(function (err) {
+        window.AICS.setAIEndpoint("");
+        setStatus("连不上 " + healthUrl + "（" + (err.message || err) + "）。已回退到纯本地模式。", "err");
+      });
+  }
+
+  document.getElementById("ep-btn").addEventListener("click", connect);
+  document.getElementById("ep-clear").addEventListener("click", function () {
+    epInput.value = "";
+    window.AICS.setAIEndpoint("");
+    setStatus("当前：纯本地匹配模式（只用知识库，不联网）", "local");
+  });
+
+  if (AI_ENDPOINT) { epInput.value = AI_ENDPOINT; connect(); }
+</script>
+</body>
+</html>

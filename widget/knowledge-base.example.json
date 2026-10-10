@@ -1,0 +1,265 @@
+[
+  {
+    "id": "KB-001",
+    "category": "物流",
+    "question": "多久能收到货？",
+    "match_phrases": [
+      "How long does shipping take?",
+      "When will my order arrive?",
+      "When will my package arrive?",
+      "how many days for delivery",
+      "delivery time?",
+      "还要多久能到？",
+      "多久到货"
+    ],
+    "answer": "普通订单通常 7–15 个工作日送达，旺季（11–12 月）可能延长到 20 个工作日。下单后 1–2 天内会收到带追踪号的发货邮件。",
+    "auto_reply": true,
+    "handoff_when": "客户已超过 20 个工作日未收到",
+    "notes": ""
+  },
+  {
+    "id": "KB-002",
+    "category": "物流",
+    "question": "我的包裹现在到哪了？",
+    "match_phrases": [
+      "Where is my order?",
+      "Where is my package?",
+      "track my package",
+      "tracking number",
+      "has my order shipped",
+      "i haven't received my package",
+      "我的货到哪了？",
+      "查快递"
+    ],
+    "answer": "您可以用发货邮件里的追踪号在这里查：https://example.com/track 。如果追踪信息超过 5 天没更新，回复我，我帮您去问物流。",
+    "auto_reply": true,
+    "handoff_when": "追踪显示已签收但客户说没收到；或追踪超过 5 天未更新",
+    "notes": "追踪链接请替换成你自己的"
+  },
+  {
+    "id": "KB-003",
+    "category": "物流",
+    "question": "支持货到付款吗？",
+    "match_phrases": [
+      "Do you support cash on delivery?",
+      "cash on delivery",
+      "Can I pay when it arrives?",
+      "COD available?",
+      "¿Se puede pagar contra entrega?",
+      "هل الدفع عند الاستلام متاح؟",
+      "支持货到付款吗",
+      "可以货到付款吗"
+    ],
+    "answer": "支持。（此处填写你实际支持的配送方式：例如「下单时选择 Cash on Delivery，收到货后当面付款给快递员。如需取消订单，请提前在发货前告知我们，避免产生退回运费。」）",
+    "auto_reply": true,
+    "handoff_when": "客户要求修改送货时间或收货地址",
+    "notes": "括号里的内容必须按你的实际政策替换，不要直接上线"
+  },
+  {
+    "id": "KB-004",
+    "category": "物流",
+    "question": "清关要我自己办吗？关税谁付？",
+    "match_phrases": [
+      "Do I need to clear customs myself?",
+      "Who pays the customs duty?",
+      "customs fees",
+      "import tax",
+      "关税谁付",
+      "清关怎么办"
+    ],
+    "answer": "我们负责出口报关。进口关税和当地税费一般由收件人承担，具体金额由当地海关核定，我们无法提前告知。",
+    "auto_reply": "handoff",
+    "handoff_when": "包裹被海关扣留或要求补充文件",
+    "notes": "涉及法律责任，话术上线前请先跟你的物流商核对口径"
+  },
+  {
+    "id": "KB-101",
+    "category": "售前",
+    "question": "这个能发到我所在的国家吗？",
+    "match_phrases": [
+      "Do you ship to Saudi Arabia?",
+      "Do you ship to Germany?",
+      "ship to Canada?",
+      "Do you deliver to my country?",
+      "¿Hacen envíos a México?",
+      "helo i want buy ship to malaysia can",
+      "能发到我的国家吗",
+      "发不发货到国外"
+    ],
+    "answer": "我们目前发货到：美国、加拿大、英国、德国、法国、沙特阿拉伯、阿联酋、澳大利亚。（请按你实际的配送国家清单填写。）清单外的地区暂时不发。",
+    "auto_reply": true,
+    "handoff_when": "客户询问清单外的地区，或询问转运",
+    "notes": ""
+  },
+  {
+    "id": "KB-102",
+    "category": "售前",
+    "question": "产品具体尺寸是多少？",
+    "match_phrases": [
+      "What are the dimensions?",
+      "what size is it",
+      "Will it fit a 65 inch TV?",
+      "size chart",
+      "尺寸多少",
+      "多大"
+    ],
+    "answer": "（此处按产品逐项填写精确尺寸，务必带单位。例如：长 120cm × 宽 35cm × 高 75cm。）尺寸类问题纠纷高发，请务必写准。",
+    "auto_reply": true,
+    "handoff_when": "客户给出非标准使用场景，需要人工判断",
+    "notes": "示例答案必须替换，不要直接上线"
+  },
+  {
+    "id": "KB-103",
+    "category": "售前",
+    "question": "能兼容我的设备型号吗？",
+    "match_phrases": [
+      "does it work with iPhone 15 pro max",
+      "is it compatible with",
+      "will this fit my phone",
+      "兼容性",
+      "这个型号能用吗"
+    ],
+    "answer": "（此处填写兼容机型清单或对照表链接。例如：支持 iPhone 12 至 iPhone 16 全系列，以及三星 Galaxy S21 以上机型。）",
+    "auto_reply": true,
+    "handoff_when": "客户询问清单外的机型",
+    "notes": "示例答案必须替换"
+  },
+  {
+    "id": "KB-104",
+    "category": "售前",
+    "question": "能不能改订单（颜色、尺寸、收货地址）？",
+    "match_phrases": [
+      "Can I change my order?",
+      "I put the wrong address",
+      "change the color",
+      "change shipping address",
+      "能不能改地址",
+      "改一下订单"
+    ],
+    "answer": "还没发货的话可以改，请尽快把订单号和要改的内容发给我。已发货的订单我们改不了，可以联系承运商试着改派。",
+    "auto_reply": "handoff",
+    "handoff_when": "所有改单请求都需要人工处理",
+    "notes": "时效性强，先自动应答能顶住「没人在」的空白期"
+  },
+  {
+    "id": "KB-201",
+    "category": "售后",
+    "question": "能退货吗？多久之内？",
+    "match_phrases": [
+      "What is your return policy?",
+      "Can I return this?",
+      "how do I return",
+      "who pays return shipping",
+      "return shipping cost",
+      "退货政策",
+      "能不能退",
+      "我要退货",
+      "退货运费谁出"
+    ],
+    "answer": "未使用的商品可在签收后 30 天内退回。退回运费由买家承担。定制商品不支持退货。（请按你的实际政策替换。）",
+    "auto_reply": true,
+    "handoff_when": "客户要求换货，或商品有破损",
+    "notes": "示例政策必须替换"
+  },
+  {
+    "id": "KB-202",
+    "category": "售后",
+    "question": "退款多久到账？",
+    "match_phrases": [
+      "How long does a refund take?",
+      "when will I get my money back",
+      "refund time",
+      "退款多久到账",
+      "钱什么时候退"
+    ],
+    "answer": "我们收到退货后 1–2 个工作日内处理退款，原路退回。到账时间取决于您的银行或支付渠道，通常 5–10 个工作日。",
+    "auto_reply": "handoff",
+    "handoff_when": "超过 10 个工作日仍未到账",
+    "notes": "退款相关一律不自动作答，先给答案再转人工"
+  },
+  {
+    "id": "KB-203",
+    "category": "售后",
+    "question": "收到的商品损坏或无法使用怎么办？",
+    "match_phrases": [
+      "It arrived broken",
+      "It doesn't work",
+      "damaged item",
+      "defective",
+      "收到的东西坏了",
+      "坏了怎么赔"
+    ],
+    "answer": "很抱歉。麻烦您拍一张问题的照片或一小段视频发给我，我这边马上给您处理——通常是直接补发或全额退款。",
+    "auto_reply": "handoff",
+    "handoff_when": "全部转人工",
+    "notes": "涉及赔付，绝不能全自动"
+  },
+  {
+    "id": "KB-204",
+    "category": "售后",
+    "question": "要退款 / 我要申请退款",
+    "match_phrases": [
+      "I want a refund",
+      "I need a refund",
+      "give me my money back",
+      "我要退款",
+      "申请退款"
+    ],
+    "answer": "这个需要人工来处理，我帮您转过去。",
+    "auto_reply": false,
+    "handoff_when": "全部转人工",
+    "notes": "退款一律人工，机器不要碰"
+  },
+  {
+    "id": "KB-301",
+    "category": "其他",
+    "question": "能保证在某个日期前送到吗？",
+    "match_phrases": [
+      "Can you guarantee it will arrive before",
+      "guaranteed delivery",
+      "保证一定能到吗",
+      "能准时到吗"
+    ],
+    "answer": "抱歉，物流时间我们没办法保证到具体某一天，只能给区间。如果需要赶某个日期，建议您提前下单留出余量。",
+    "auto_reply": false,
+    "handoff_when": "客户坚持要承诺具体日期",
+    "notes": "红线：不承诺日期"
+  },
+  {
+    "id": "KB-302",
+    "category": "其他",
+    "question": "有没有折扣或优惠？",
+    "match_phrases": [
+      "do I get a discount",
+      "any coupon",
+      "can you give me a better price",
+      "有折扣吗",
+      "能便宜点吗"
+    ],
+    "answer": "价格是页面标价，没有额外折扣。如果有活动，会在店铺首页公告。",
+    "auto_reply": false,
+    "handoff_when": "客户议价",
+    "notes": "红线：不主动给折扣，由人工处理"
+  },
+  {
+    "id": "KB-401",
+    "category": "其他",
+    "question": "客户情绪激动或投诉",
+    "match_phrases": [
+      "This is a scam",
+      "I'm reporting you",
+      "leaving 1 star",
+      "this is ridiculous",
+      "terrible service",
+      "never buying again",
+      "worst experience",
+      "我要投诉",
+      "你们就是骗子",
+      "太差了"
+    ],
+    "answer": "收到，这个得人来处理，我马上帮您转人工。",
+    "auto_reply": "handoff",
+    "handoff_when": "全部转人工",
+    "notes": "机器不跟客户争辩，也不承诺补偿。认出情绪就立刻交给人工"
+  }
+]
